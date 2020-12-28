@@ -7,27 +7,24 @@
 
 <script>
 import newPostForm from '@/components/Admin/NewPostForm'
+import axios from 'axios'
 
 export default {
     components: {
         newPostForm
     },
     layout: 'admin',
-    data() {
-        return {
-            post: {
-                id: 1,
-                title: '1 Post',
-                descr: 'lorem Numquam nesciunt veritatis maxime libero reiciendis',
-                img: 'https://gazetavolgodonsk.ru/wp-content/uploads/2020/02/skolko-vesit-samyj-tolstyj-kot-na-planete2-1140x760.jpg',
-                content: 'sad323r2c5234 CONTENT'
-            }
-        }
+    asyncData(context) {
+        return axios.get(`https://blog-nuxt-alexsfv-default-rtdb.firebaseio.com/posts/${context.params.postId}.json`)
+            .then(res => ({
+                post: {...res.data, id: context.params.postId}
+            }))
+            .catch(e => context.error(e))
     },
     methods: {
         onSubmit(post) {
-            console.log('post editing!')
-            console.log(post)
+            this.$store.dispatch('editPost', post)
+                .then(() => this.$router.push('/admin'))
         }
     }
 }

@@ -2,7 +2,7 @@
     <div class="wrapper-content wrapper-content--fixed">
        <post :post="post"/>
        <comments :comments="comments"/>
-       <new-comment />
+       <new-comment :postId="$route.params.id"/>
     </div>
 </template>
 
@@ -10,6 +10,7 @@
 import post from '@/components/Blog/Post'
 import newComment from '@/components/Comments/NewComment'
 import comments from '@/components/Comments/Comments'
+import axios from 'axios'
 
 export default {
     components: {
@@ -17,25 +18,21 @@ export default {
         newComment,
         comments,
     },
-    data() {
+    // computed: {
+
+    // },
+    async asyncData(context) {
+        const [post, comments] = await Promise.all([
+            axios.get(`https://blog-nuxt-alexsfv-default-rtdb.firebaseio.com/posts/${context.params.id}.json`),
+            axios.get(`https://blog-nuxt-alexsfv-default-rtdb.firebaseio.com/comments.json`)
+        ])
+
+        let commentsArray = []
+        commentsArray = Object.values(comments.data).filter(comment => comment.postId === context.params.id && comment.publish)
+
         return {
-            post: {
-                id: 1,
-                title: '1 Post',
-                descr: 'lorem Numquam nesciunt veriatis maxime libero reiciendtis',
-                content: 'lorem Numquam nesciunt veritatis maxime libero reiciendis. lorem Numquam nesciunt veritatis maxime libero reiciendis',
-                img: 'https://gazetavolgodonsk.ru/wp-content/uploads/2020/02/skolko-vesit-samyj-tolstyj-kot-na-planete2-1140x760.jpg'
-            },
-            comments: [
-                {
-                    name: 'Alex',
-                    text: 'veritatis maxime libero reiciendis. lorem Numquam '
-                },
-                {
-                    name: 'Evgen',
-                    text: 'veritatis maxime libero reiciendis. lorem Numquam '
-                }
-            ]
+            post: post.data,
+            comments: commentsArray
         }
     }
 }
