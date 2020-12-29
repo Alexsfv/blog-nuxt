@@ -30,7 +30,7 @@ export default {
         },
         required: {
             type: Boolean,
-            type: true
+            default: true
         }
     }
 }

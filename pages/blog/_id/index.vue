@@ -18,9 +18,23 @@ export default {
         newComment,
         comments,
     },
-    // computed: {
+    head() {
+        const title = this.post.title
+        const description = this.post.descr
+        const img = `site.com/${this.post.img}`
+        const type = 'article'
 
-    // },
+        return {
+            title: title,
+            meta: [
+                { hid: 'og:title', name: 'og:title', content: title },
+                { hid: 'og:description', name: 'og:description', content: description },
+                { hid: 'description', name: 'description', content: description },
+                { hid: 'og:type', name: 'og:type', content: type },
+                { hid: 'og:img', name: 'og:img', content: img },
+            ]
+        }
+    },
     async asyncData(context) {
         const [post, comments] = await Promise.all([
             axios.get(`https://blog-nuxt-alexsfv-default-rtdb.firebaseio.com/posts/${context.params.id}.json`),

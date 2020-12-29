@@ -2,7 +2,7 @@
     <div class="wrapper-content wrapper-content--fixed">
         <promo />
         <Intro title="My lasts posts: "/>
-        <PostsList :posts="postsLoaded"/>
+        <PostsList :posts="posts"/>
         <contacts />
     </div>
 </template>
@@ -16,28 +16,25 @@ export default {
         promo,
         contacts
     },
-    data() {
+    head() {
+        const title = 'My SSR Blog'
+        const description = 'My SSR Blog! Witn Nuxt.js'
+        const type = 'site'
+
         return {
-            posts: []
+            title,
+            meta: [
+                { hid: 'og:title', name: 'og:title', content: title },
+                { hid: 'og:description', name: 'og:description', content: description },
+                { hid: 'description', name: 'description', content: description },
+                { hid: 'og:type', name: 'og:type', content: type },
+            ]
         }
     },
-    asyncData(context) {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve({
-                    postsLoaded: [
-                        {
-                            id: 1,
-                            title: '1 Post',
-                            descr: 'lorem Numquam nesciunt veritatis maxime libero reiciendis',
-                            img: 'https://gazetavolgodonsk.ru/wp-content/uploads/2020/02/skolko-vesit-samyj-tolstyj-kot-na-planete2-1140x760.jpg'
-                        }
-                    ]
-                })
-            }, 1500);
-        })
-            .then(data => data)
-            .catch(e => context.errer(e))
+    computed: {
+        posts() {
+            return this.$store.getters.getPostsLoaded
+        }
     },
 }
 </script>

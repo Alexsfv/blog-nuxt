@@ -2,6 +2,10 @@
     <section class="auth">
         <div class="container">
             <form @submit.prevent="onSubmit" class="auth__form">
+                <h2>Данные для админки</h2>
+                <p><b>email:</b> admin@mail.ru</p>
+                <p><b>pass:</b> admin@mail.ru</p>
+
                 <AppInput type="email" v-model="user.email">Login:</AppInput>
                 <AppInput type="password" v-model="user.password">Password:</AppInput>
 
@@ -19,16 +23,27 @@ export default {
     data() {
         return {
             user: {
-                email: 'sa@dsfad.dgbdg',
+                email: 'admin@mail.ru',
                 password: ''
             }
         }
     },
     methods: {
         onSubmit() {
+            this.$store.dispatch('authUser', this.user)
+                .then(res => {
+                    this.$router.push('/admin')
+                })
+                .catch(e => {
+                    this.resetFields()
+                    console.log(e)
+                })
+
+        },
+        resetFields() {
             this.user.email = ''
             this.user.password = ''
-        },
+        }
     }
 }
 </script>

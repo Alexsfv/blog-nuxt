@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -5,7 +7,8 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' }
+      { name: 'yandex-verification', content: 'KEY' },
+      { name: 'google-site-verification', content: 'KEY' },
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -32,9 +35,30 @@ export default {
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
+    // ['@nuxtjs/google-analytics', {
+    //   id: 'UA-KEY'
+    // }],
+    // ['@nuxtjs/yandex-metrika', {
+    //   id: 'KEY',
+    //   webvisor: true,
+    //   clickmap: true,
+    //   trackLinks: true,
+    // }]
   ],
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+    vendor: ['vue', 'axios']
+  },
+  generate: {
+    routes: function() {
+      return axios.get('https://blog-nuxt-alexsfv-default-rtdb.firebaseio.com/posts.json')
+        .then(res => {
+          const arrayWithId = Object.entries(res.data).map(([id, post]) => ({...post, id: id}) )
+          return arrayWithId.map(post => {
+            return '/blog/' + post.id
+          })
+        })
+    }
   }
 }

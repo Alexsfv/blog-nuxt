@@ -1,3 +1,5 @@
 export default function (context) {
-    // console.log('context', context)
+    if(!context.store.getters.checkAuthUser) {
+        context.redirect('/admin/auth')
+    }
 }

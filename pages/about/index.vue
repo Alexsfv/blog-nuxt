@@ -19,6 +19,26 @@
     </div>
 </template>
 
+<script>
+export default {
+    head() {
+        const title = 'About My SSR Blog'
+        const description = 'About My SSR Blog! Witn Nuxt.js'
+        const type = 'site'
+
+        return {
+            title,
+            meta: [
+                { hid: 'og:title', name: 'og:title', content: title },
+                { hid: 'og:description', name: 'og:description', content: description },
+                { hid: 'description', name: 'description', content: description },
+                { hid: 'og:type', name: 'og:type', content: type },
+            ]
+        }
+    },
+}
+</script>
+
 <style lang="scss" scoped>
 .about {
     text-align: center;
