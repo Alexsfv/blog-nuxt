@@ -16,6 +16,11 @@ export default {
     ]
   },
 
+  transition: {
+    name: 'fade',
+    mode: 'out-in'
+  },
+
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [
     { src: '~/assets/scss/main.scss', lang: 'scss' }

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import Cookie from 'js-cookie'
 
 export const state = () => ({
     postsLoaded: [],
@@ -55,10 +56,38 @@ export const actions = {
         const loginLink = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${key}`
 
         return axios.post(loginLink, data)
-            .then(res => commit('setToken', res.data.idToken))
+            .then(res => {
+                const token = res.data.idToken
+                commit('setToken', token)
+                // to localStorage
+                localStorage.setItem('token', token)
+                // to cookie
+                Cookie.set('jwt', token)
+            })
             .catch(ee => console.log(e))
     },
+    initAuth({commit}, req) {
+        let token
+        if (req) {
+            // if server
+            if (!req.headers.cookie) return false
+            const jwtCookie = req.headers.cookie
+                .split(';')
+                .find(token => token.trim().startsWith('jwt='))
+            if (!jwtCookie) return false
+            token = jwtCookie.split('=')[1]
+        } else {
+            // if client
+            token = localStorage.getItem('token')
+            if (!token) {
+                return false
+            }
+        }
+        commit('setToken', token)
+    },
     logoutUser({commit}) {
+        localStorage.removeItem('token')
+        Cookie.remove('jwt')
         commit('destroyToken')
     },
 
